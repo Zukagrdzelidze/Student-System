@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class SwingView {
 
@@ -27,14 +29,49 @@ public class SwingView {
                 String lastName = lastNameTF.getText();
                 String year = yearTF.getText();
                 store.addStudent(new Student(firstName, lastName, Integer.valueOf(year)));
-                model.setStudents(store.getStudents());
+                model.setStudents(store.filter(new NoOPFilter()));
             }
         });
 
         JTextField firstNameFTF = new JTextField();
+        firstNameFTF.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (firstNameFTF.getText().length() > 0){
+                    Filter filter = new FirstNameFilter(firstNameFTF.getText());
+                    model.setStudents(store.filter(filter));
+                }
+            }
+        });
         JTextField lastNameFTF = new JTextField();
         JTextField yearFTF = new JTextField();
         JButton filter = new JButton("Filter");
+        filter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AndFilter andFilter = new AndFilter();
+                if (firstNameFTF.getText().length() > 0){
+                    andFilter.addFilter(new FirstNameFilter(firstNameFTF.getText()));
+                }
+                if (lastNameFTF.getText().length() > 0){
+                    andFilter.addFilter(new LastNameFilter(lastNameFTF.getText()));
+                }
+                if (yearFTF.getText().length() > 0){
+                    andFilter.addFilter(new YearFilter(Integer.valueOf(yearFTF.getText())));
+                }
+                model.setStudents(store.filter(andFilter));
+            }
+        });
 
         createPanel.add(firstNameTF);
         createPanel.add(lastNameTF);
