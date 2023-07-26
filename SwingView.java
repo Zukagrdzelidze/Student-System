@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 
 public class SwingView {
 
@@ -28,8 +29,22 @@ public class SwingView {
                 String firstName = firstNameTF.getText();
                 String lastName = lastNameTF.getText();
                 String year = yearTF.getText();
-                store.addStudent(new Student(firstName, lastName, Integer.valueOf(year)));
-                model.setStudents(store.filter(new NoOPFilter()));
+                List<Student> students = store.filter(new NoOPFilter());
+                Student newStudent = new Student(firstName, lastName, Integer.valueOf(year), "pending");
+                students.add(newStudent);
+                model.setStudents(students);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        store.addStudent(new Student(firstName, lastName, Integer.valueOf(year), "done"));
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                model.setStudents(store.filter(new NoOPFilter()));
+                            }
+                        });
+                    }
+                }).start();
             }
         });
 

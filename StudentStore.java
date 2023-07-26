@@ -8,7 +8,12 @@ public class StudentStore {
         students = new ArrayList<>();
     }
 
-    public void addStudent (Student student){
+    public void addStudent(Student student){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         students.add(student);
     }
 

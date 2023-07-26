@@ -4,7 +4,7 @@ import java.util.List;
 
 public class StudentTableModel extends AbstractTableModel {
 
-    private String[] header = {"First Name", "Last Name",  "Year"};
+    private String[] header = {"First Name", "Last Name",  "Year", "Status"};
     private List<Student> students;
 
     public StudentTableModel(){
@@ -27,6 +27,7 @@ public class StudentTableModel extends AbstractTableModel {
             case 0: return student.getFirstName();
             case 1: return student.getLastName();
             case 2: return student.getYear();
+            case 3: return student.getStatus();
         }
         throw new RuntimeException("Could not get value. You made mistake");
     }
